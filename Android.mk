@@ -23,12 +23,12 @@ HYBRIS_PATH:=$(LOCAL_PATH)
 # image specific kernel COMMANDLINE vars is provided but whether it
 # works or not is down to your bootloader.
 
-HYBRIS_BOOTIMG_COMMANDLINE :=
+HYBRIS_BOOTIMG_COMMANDLINE := audit=0 printk.devkmsg=on
 HYBRIS_RECOVERYIMG_COMMANDLINE := bootmode=debug
 HYBRIS_BOOTLOGO :=
 # BOOT
 HYBRIS_B_DEFAULT_OS := sailfishos
-HYBRIS_B_ALWAYSDEBUG := 
+HYBRIS_B_ALWAYSDEBUG :=
 # RECOVERY
 HYBRIS_R_DEFAULT_OS := sailfishos
 HYBRIS_R_ALWAYSDEBUG := 1
