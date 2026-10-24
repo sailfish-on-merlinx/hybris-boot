@@ -15,13 +15,17 @@ ui_print("");
 %ASSERT_DEVICE%
 
 ui_print("Device check succeeded, mounting filesystems ...");
-# Lineage Recovery formats userdata as f2fs; fall back to ext4 for other layouts
-mount("f2fs", "EMMC", "%DATA_PART%", "/data") || mount("ext4", "EMMC", "%DATA_PART%", "/data");
+# userdata is f2fs on LineageOS-based layouts, ext4 on others. Lineage
+# Recovery's "Format data" on metadata-encrypted devices only wipes the
+# partition, so there may be no filesystem to mount yet.
+(mount("f2fs", "EMMC", "%DATA_PART%", "/data") || mount("ext4", "EMMC", "%DATA_PART%", "/data")) || abort("Could not mount %DATA_PART% on /data. If it has no filesystem yet, create one first (e.g. make_f2fs %DATA_PART% from the recovery shell) and retry.");
 
 ui_print("Copying filesystem archive ...");
 package_extract_file("%IMAGE_FILE%", "/data/sailfishos-rootfs.tar.bz2");
 ui_print("Copying installation script ...");
 package_extract_file("updater-unpack.sh", "/tmp/updater-unpack.sh");
+# Static busybox from the image, for recoveries without bzip2 (optional)
+package_extract_file("busybox-static", "/tmp/busybox-static");
 
 ui_print("Running installation script ...");
 %SET_PERMISSIONS%
