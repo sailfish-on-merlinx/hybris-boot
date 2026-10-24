@@ -15,7 +15,8 @@ ui_print("");
 %ASSERT_DEVICE%
 
 ui_print("Device check succeeded, mounting filesystems ...");
-mount("ext4", "EMMC", "%DATA_PART%", "/data");
+# Lineage Recovery formats userdata as f2fs; fall back to ext4 for other layouts
+mount("f2fs", "EMMC", "%DATA_PART%", "/data") || mount("ext4", "EMMC", "%DATA_PART%", "/data");
 
 ui_print("Copying filesystem archive ...");
 package_extract_file("%IMAGE_FILE%", "/data/sailfishos-rootfs.tar.bz2");
@@ -24,7 +25,7 @@ package_extract_file("updater-unpack.sh", "/tmp/updater-unpack.sh");
 
 ui_print("Running installation script ...");
 %SET_PERMISSIONS%
-run_program("/tmp/updater-unpack.sh") == "0" || abort("Failed to extract filesystem!");
+run_program("/system/bin/sh", "/tmp/updater-unpack.sh") == "0" || abort("Failed to extract filesystem!");
 
 ui_print("Flashing hybris-boot.img ...");
 package_extract_file("hybris-boot.img", "%BOOT_PART%");
