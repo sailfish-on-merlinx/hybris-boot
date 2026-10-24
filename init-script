@@ -418,6 +418,11 @@ if [ "$DONE_SWITCH" = "no" ]; then
     # Disable mdev hotplug now - let udev handle it in main boot
     echo "" > /proc/sys/kernel/hotplug
 
+    # Ensure rootfs halts in debug telnet and masks usb-moded
+    touch /target/init_enter_debug2
+    mkdir -p /target/etc/systemd/system
+    ln -sf /dev/null /target/etc/systemd/system/usb-moded.service
+
     if [ -f "/target/init-debug" ]; then
 	exec switch_root /target /init-debug &> /target/init-debug-stderrout
     else
